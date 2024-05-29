@@ -1,7 +1,7 @@
-linhaPrincipais = 1
-linhaSobremesas = 2
-linhaEntradas = 3
-linhaBebidas = 4
+linhaPrincipais = 0
+linhaSobremesas = 1
+linhaEntradas = 2
+linhaBebidas = 3
 
 def menuPrincipal():
 
