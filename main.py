@@ -2,65 +2,235 @@ linhaPrincipais = 0
 linhaSobremesas = 1
 linhaEntradas = 2
 linhaBebidas = 3
+pedidoValores = 0
+pedidoProdutos = ""
+
+## loop inicial & inicialização de valores.
+
+def escritaInicial():
+    """Faz a escrita inicial dos dados no arquivo txt."""
+    initLista = ['[{"sanduíches":{"x-tudo":"20", "baurú":"15"}},{"salgados":{"coxinha":"7", "bolinho de carne":"6"}}]',
+                 '[{"sorvete":{"sorvete de morango":"6", "sorvete de chocolate":"6"}},{"bolos":{"bolo de chocolate (fatia)":"5", "bolo de milho (fatia)":"5"}}]',
+                 '[{"pão de queijo":{"pão de queijo comum (5 unidades)":"4", "pão de queijo recheado (2 unidades)":"3"}}]',
+                 '[{"refrigerantes":{"coca-cola":"8", "sprite":"7"}},{"sucos":{"suco de manga":"8", "suco de uva":"9"}}]']
+
+    initInfo = ['{"nome":"Molejo"}','{"porcentagem":"8"}']
+
+    with open("menu.txt", "w", encoding="utf-8") as file:
+        for i in range(4):
+            if i < 3:
+                file.writelines(f"{initLista[i]}\n")
+            else:
+                file.writelines(f"{initLista[i]}")
+
+    with open("info.txt", "w", encoding="utf-8") as file:
+        for i in range(0,2):
+            if i < 1:
+                file.writelines(f"{initInfo[i]}\n")
+            else:
+                file.writelines(f"{initInfo[i]}")
 
 def menuPrincipal():
 
-    print("---------------------------------------\n\nSeja bem vindo(a) a nossa cafeteria! O que deseja pra hoje? :) \n\nDigite 1 para adicionar um item ao menu, digite 2 para subtrair um item do menu, digite 3 para alterar um item do menu, digite 4 para buscar itens no menu, digite 5 para listar o menu, digite 6 para fazer um pedido (com cálculo de valor incluso!) ou digite 0 para encerrar esse atendimento.\n\n---------------------------------------")
+    pedidoValores = 0
+    pedidoProdutos = ""
+
+    ## pegar o nome da cafeteria do arquivo
+    linha = lerLinhas(0, "info.txt")
+    dicTemp = eval(linha)
+    for i in dicTemp:
+        nome = dicTemp[i]
+
+    print(f"\n\n\n\n\n\n\n\n\n---------------------------------------\n\nEsse é o cardápio eletrônico da cafeteria {nome}!\nAs funções disponíveis são as seguintes: \n\n[1] Adicionar um item ao menu\n[2] Subtrair um item do menu\n[3] Alterar um item do menu\n[4] Buscar itens no menu\n[5] Listar o menu\n[6] Fazer um pedido (com cálculo de valor incluso!)\n[7] Alterar o nome do restaurante/porcentagem do garçom\n[0] Encerrar o programa\n\n---------------------------------------")
 
     varEscolher = int(input("\nSua escolha: "))
 
     if varEscolher == 1:
-        addItem()
+        adicionarItem()
     elif varEscolher == 2:
-        subItem()
+        subtrairItem()
     elif varEscolher == 3:
-        altItem()
+        alterarItem()
     elif varEscolher == 4:
-        locItem()
+        localizarItem()
     elif varEscolher == 5:
-        listMenu()
+        listarMenu()
     elif varEscolher == 6:
-        finPedido()
+        finalizarPedido(pedidoValores, pedidoProdutos)
+    elif varEscolher == 7:
+        alterarInfo()
 
+## funções básicas do programa.
 
-def addItem():
-    categoriaItem = int(input("Qual categoria de produto você deseja? 0 para pratos principais, 1 para sobremesas, 2 para entradas e 3 para bebidas: "))
-    categoria = lerLinhas(categoriaItem)
-    print(escreverLinhas(2,5))
+def adicionarItem():
+    menuPrincipal()
 
-def subItem():
-    print()
+def subtrairItem():
+    menuPrincipal()
 
-def altItem():
-    print()
+def alterarItem():
+    menuPrincipal()
 
-def locItem():
-    print()
+def localizarItem():
+    menuPrincipal()
 
-def listMenu():
-    print()
+def listarMenu():
+    menuPrincipal()
 
-def finPedido():
-    print()
+def finalizarPedido(pedidoValores, pedidoProdutos):
+    """Faz a simulação de preço do pedido do cliente, detalhando o valor pós-calculo de porcentagem do garçom e os itens comprados."""
+    linha = lerLinhas(1, "info.txt")
+    dicTemp = eval(linha)
+    for i in dicTemp:
+        por = int(dicTemp[i])
 
-def lerLinhas(linha):
-    """Recebe um valor inteiro correspondente à linha desejada no arquivo txt e retorna o conteúdo da respectiva."""
+    print("------------------------------- \n\nOk, vamos fazer o pedido! :) \nQual a categoria do item?\n\n[1] Pratos principais\n[2] Sobremesas\n[3] Entradas\n[4] Bebidas \n[5] Finalizar o pedido\n[0] Voltar ao menu principal\n\n-------------------------------\n\n ")
 
-    with open("menu.txt", "r") as file:
+    varEscolher = int(input(""))
+
+    if varEscolher == 1:
+        pedidoValores, pedidoProdutos = processarPedido(linhaPrincipais, pedidoValores, pedidoProdutos)
+        finalizarPedido(pedidoValores, pedidoProdutos)  
+
+    elif varEscolher == 2:
+        pedidoValores, pedidoProdutos = processarPedido(linhaSobremesas, pedidoValores, pedidoProdutos)
+        finalizarPedido(pedidoValores, pedidoProdutos) 
+
+    elif varEscolher == 3:
+        pedidoValores, pedidoProdutos = processarPedido(linhaEntradas, pedidoValores, pedidoProdutos)
+        finalizarPedido(pedidoValores, pedidoProdutos) 
+
+    elif varEscolher == 4:
+        pedidoValores, pedidoProdutos = processarPedido(linhaBebidas, pedidoValores, pedidoProdutos)
+        finalizarPedido(pedidoValores, pedidoProdutos) 
+
+    elif varEscolher == 5:
+        print(f"\n\n-------------------------------\n\nO valor do seu pedido (+ a taxa do garçom) deu R${pedidoValores + (pedidoValores * (por / 100))} e os itens pedidos foram os seguintes: {pedidoProdutos}.\n\n-------------------------------\n\n")
+        menuPrincipal()
+
+    else:
+        menuPrincipal()    
+
+def processarPedido(linhaMenu, pedidoValores, pedidoProdutos):
+        
+        linha = lerLinhas(linhaMenu, "menu.txt")
+        dicTemp = eval(linha)
+        tipos = returnTipos(dicTemp)
+        print(f"\n-------------------------------\n\nNessa categoria, temos os itens: \n\n{tipos}\n\nEm qual desses itens está o produto que você quer?\n\n-------------------------------\n\n")
+        varItem = int(input("(use a posição do item para pedir. ex: [1] Primeiro item, [2] Segundo item, etc): "))
+
+        produtos = returnProdutos(varItem, dicTemp)
+        print(f"\n-------------------------------\n\nNesse item, temos os produtos: {produtos} \n\nQual deles você quer?\n\n-------------------------------\n\n")
+        varPedido = int(input("(use a posição do item para pedir. ex: [1] Primeiro item, [2] Segundo item, etc): "))
+
+        contadorProd = 0
+        contadorTipo = 0
+        for item in dicTemp:
+            for label, value in item.items():
+                contadorTipo += 1
+                if contadorTipo == varItem:
+                    for produto, valor in value.items():
+                        contadorProd += 1
+                        if contadorProd == varPedido:
+                            pedidoValores += int(valor)
+                            pedidoProdutos += f"\n{produto}"
+        
+        return pedidoValores, pedidoProdutos
+
+def alterarInfo():
+    """Altera as informações contidas no arquivo 'info.txt'."""
+
+    print("\n-------------------------------\n\nOk, colaborador! Que informações você quer alterar?\n\n[1] Nome do restaurante\n[2] Porcentagem do garçom\n\n-------------------------------")
+
+    varEscolha = int(input("\n"))
+
+    if varEscolha == 1:
+        linha = lerLinhas(0, "info.txt")
+        dicTemp = eval(linha)
+
+        for i in dicTemp:
+            nomeAntigo = dicTemp[i]
+
+        nome = input(f"\n-------------------------------\n\nE qual deve ser o novo nome do restaurante? O atual é {nomeAntigo}. \n\nATENÇÃO: essa é uma escolha muito importante, consulte seus superiores primeiro antes de fazer alterações no nome do restaurante, afinal, o marketing é a alma do negócio!\n\nNovo nome: ")
+
+        for i in dicTemp:
+            dicTemp[i] = nome
+
+        escreverLinhas(1, dicTemp, "info.txt")
+        print(f"\n\nNome alterado com sucesso! A cafeteria agora se chama {nome}.\n\n")
+        menuPrincipal()
+    elif varEscolha == 2:
+        linha = lerLinhas(1, "info.txt")
+        dicTemp = eval(linha)
+
+        for i in dicTemp:
+            porAntiga = dicTemp[i]
+
+        por = input(f"E qual deve ser a nova porcentagem do garçom? A atual é {porAntiga}. \n\nATENÇÃO: o garçom vai ficar extremamente chateado se você mexer com a porcentagem dele, esteja avisado!\n\nNova porcentagem: ")
+
+        for i in dicTemp:
+            dicTemp[i] = por
+
+        escreverLinhas(2, dicTemp, "info.txt")
+        menuPrincipal()
+    else:
+        menuPrincipal()
+
+## funções genéricas p/auxiliar na manipulação de dados.
+
+def lerLinhas(linha, arquivo):
+    """Retorna a linha inteira no arquivo indicado como uma string. \n\nExige os parâmetros linha a ser copiada (int) e arquivo a ser lido (string). \n\nex: Preciso ler a linha 8 do arquivo receitas, lerLinhas(8, 'receitas.txt')."""
+
+    with open(f"{arquivo}", "r", encoding="utf-8") as file:
         content = file.readlines()
         return content[linha]
     
-def escreverLinhas(linha, conteudo):
-    """Recebe um valor inteiro correspondente à linha desejada no arquivo txt e o conteúdo para substituição, subscrevendo o conteúdo da respectiva. A função não retorna valor algum. A ordem de parâmetros é primeiro linha e depois conteúdo."""
+def escreverLinhas(linha, conteudo, arquivo):
+    """Sobrescreve a linha do arquivo indicado com o conteúdo fornecido. Não retorna nada.\n\nExige os parâmetros linha a ser sobrescrita (int), conteúdo (qualquer um, pois a função formata para string) e arquivo (string)."""
 
-    with open("menu.txt",'r') as f:
+    with open(f"{arquivo}",'r', encoding="utf-8") as f:
         get_all = f.readlines()
 
-    with open("menu.txt", "w") as file:
+    with open(f"{arquivo}", "w") as file:
         for i,line in enumerate(get_all,1):
             if i == linha:
                 file.writelines(f"{conteudo} \n")
             else:
                 file.writelines(line)
 
+def returnTipos(lista):
+    """Dada uma lista, retorna todos os tipos de itens contidos nela.\n\nExige como parâmetro uma lista.\n\nNão confundir tipo com categoria: 'bebida' é categoria, 'suco' é tipo."""
+
+    tipos = []
+
+    for item in lista:
+        for label, produto in item.items():
+            tipos.append(f"{label}")
+    return tipos
+
+def returnProdutos(tipo, lista):
+    """Dado um tipo e uma lista, retorna todos os produtos contidos naquele tipo.\n\nExige como parâmetro tipo (string) e lista.\n\n"""
+    produtos = ""
+    contador = 0
+    for item in lista:
+        for label, value in item.items():
+            contador +=1
+            if contador == tipo:
+                for produto, valor in value.items():
+                    produtos += f"\n\n{produto}: {valor} reais"
+    return produtos
+
+def returnTiposProdutos(lista):
+    """Dada uma lista, retorna todos os tipos de itens contidos nela e os produtos contidos nesses tipos.\n\nExige como parâmetro uma lista.\n\nNão confundir tipo com categoria: 'bebida' é categoria, 'suco' é tipo/item e 'suco de goiaba' é produto."""
+
+    tipos = []
+
+    for item in lista:
+        for label, produto in item.items():
+            tipos.append(f"{label}:{produto}")
+    return str(tipos)
+
+## inicialização do programa.
+
+escritaInicial()
 menuPrincipal()
