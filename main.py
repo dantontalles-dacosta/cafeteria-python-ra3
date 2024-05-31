@@ -72,7 +72,49 @@ def alterarItem():
     menuPrincipal()
 
 def localizarItem():
-    menuPrincipal()
+    print("\n---------------------------------------\n\nQual o nome do item que você deseja localizar?\n\n---------------------------------------\n")
+
+    varAchou = False
+
+    nomeItem = input("")
+    linha1 = lerLinhas(0,"menu.txt")
+    linha2 = lerLinhas(1,"menu.txt")
+    linha3 = lerLinhas(2,"menu.txt")
+    linha4 = lerLinhas(3,"menu.txt")
+
+    dic1 = eval(linha1)
+    dic2 = eval(linha2)
+    dic3 = eval(linha3)
+    dic4 = eval(linha4)
+
+    listAll = []
+
+    for i in range(1,5,1):
+        listAll.append(eval(f"dic{i}"))
+
+    for i in listAll:
+        for x in i:
+            for y, z in x.items():
+                for j, k in z.items():
+                    if str(j) == nomeItem.lower():
+                        print(f"\n---------------------------------------\n\nO item {nomeItem} tem preço R${k} e se encontra na categoria {y}.\n\n[1] Procurar outro item\n\n[2] Voltar ao menu principal\n\n---------------------------------------\n\n")
+                        varChoose = int(input(""))
+                        varAchou = True
+                        if varChoose == 1: 
+                            localizarItem()
+                        else:
+                            menuPrincipal()
+                    else:
+                        varAchou = False
+
+    if varAchou == False:
+        print("\n\nO item não foi encontrado na nossa base de dados. Tem certeza de que digitou corretamente ou lembrou de cadastrá-lo?\n\n[1] Procurar novamente\n[2] Voltar ao menu principal")
+        chooseVar = int(input("\n\n"))
+
+        if chooseVar == 1:
+            localizarItem()
+        else:
+            menuPrincipal()
 
 def listarMenu():
     menuPrincipal()
@@ -115,11 +157,11 @@ def processarPedido(linhaMenu, pedidoValores, pedidoProdutos):
         
         linha = lerLinhas(linhaMenu, "menu.txt")
         dicTemp = eval(linha)
-        tipos = returnTipos(dicTemp)
+        tipos = returnTiposString(dicTemp)
         print(f"\n-------------------------------\n\nNessa categoria, temos os itens: \n\n{tipos}\n\nEm qual desses itens está o produto que você quer?\n\n-------------------------------\n\n")
         varItem = int(input("(use a posição do item para pedir. ex: [1] Primeiro item, [2] Segundo item, etc): "))
 
-        produtos = returnProdutos(varItem, dicTemp)
+        produtos = returnProdutosString(varItem, dicTemp)
         print(f"\n-------------------------------\n\nNesse item, temos os produtos: {produtos} \n\nQual deles você quer?\n\n-------------------------------\n\n")
         varPedido = int(input("(use a posição do item para pedir. ex: [1] Primeiro item, [2] Segundo item, etc): "))
 
@@ -198,18 +240,42 @@ def escreverLinhas(linha, conteudo, arquivo):
             else:
                 file.writelines(line)
 
-def returnTipos(lista):
-    """Dada uma lista, retorna todos os tipos de itens contidos nela.\n\nExige como parâmetro uma lista.\n\nNão confundir tipo com categoria: 'bebida' é categoria, 'suco' é tipo."""
+def returnTiposLista(lista):
+    """Dada uma lista, retorna todos os tipos de itens contidos nela como uma lista.\n\nExige como parâmetro uma lista.\n\nNão confundir tipo com categoria: 'bebida' é categoria, 'suco' é tipo."""
 
     tipos = []
 
     for item in lista:
         for label, produto in item.items():
             tipos.append(f"{label}")
+
     return tipos
 
-def returnProdutos(tipo, lista):
-    """Dado um tipo e uma lista, retorna todos os produtos contidos naquele tipo.\n\nExige como parâmetro tipo (string) e lista.\n\n"""
+def returnTiposString(lista):
+    """Dada uma lista, retorna todos os tipos de itens contidos nela como uma string.\n\nExige como parâmetro uma lista.\n\nNão confundir tipo com categoria: 'bebida' é categoria, 'suco' é tipo."""
+
+    tipos = []
+
+    for item in lista:
+        for label, produto in item.items():
+            tipos.append(f"{label}")
+
+    return str(tipos).replace("[","").replace("]","").replace("'","").replace('"',"")
+
+def returnProdutosLista(tipo, lista):
+    """Dado um tipo e uma lista, retorna todos os produtos contidos naquele tipo como uma lista.\n\nExige como parâmetro tipo (string) e lista.\n\n"""
+    produtos = []
+    contador = 0
+    for item in lista:
+        for label, value in item.items():
+            contador +=1
+            if contador == tipo:
+                for produto, valor in value.items():
+                    produtos.append(f"{produto}: {valor}")
+    return produtos
+
+def returnProdutosString(tipo, lista):
+    """Dado um tipo e uma lista, retorna todos os produtos contidos naquele tipo como uma string.\n\nExige como parâmetro tipo (string) e lista.\n\n"""
     produtos = ""
     contador = 0
     for item in lista:
@@ -218,7 +284,7 @@ def returnProdutos(tipo, lista):
             if contador == tipo:
                 for produto, valor in value.items():
                     produtos += f"\n\n{produto}: {valor} reais"
-    return produtos
+    return str(produtos)
 
 def returnTiposProdutos(lista):
     """Dada uma lista, retorna todos os tipos de itens contidos nela e os produtos contidos nesses tipos.\n\nExige como parâmetro uma lista.\n\nNão confundir tipo com categoria: 'bebida' é categoria, 'suco' é tipo/item e 'suco de goiaba' é produto."""
@@ -228,7 +294,11 @@ def returnTiposProdutos(lista):
     for item in lista:
         for label, produto in item.items():
             tipos.append(f"{label}:{produto}")
-    return str(tipos)
+
+    strTipos = str(tipos)
+
+    return strTipos.replace("{","").replace("}","").replace("[","").replace("]","").replace('"',"").replace("'","")
+
 
 ## inicialização do programa.
 
