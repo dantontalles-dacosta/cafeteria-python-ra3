@@ -41,7 +41,7 @@ def menuPrincipal():
     for i in dicTemp:
         nome = dicTemp[i]
 
-    print(f"\n\n\n\n\n\n\n\n\n---------------------------------------\n\nEsse é o cardápio eletrônico da cafeteria {nome}!\nAs funções disponíveis são as seguintes: \n\n[1] Adicionar um item ao menu\n[2] Subtrair um item do menu\n[3] Alterar um item do menu\n[4] Buscar itens no menu\n[5] Listar o menu\n[6] Fazer um pedido (com cálculo de valor incluso!)\n[7] Alterar o nome do restaurante/porcentagem do garçom\n[0] Encerrar o programa\n\n---------------------------------------")
+    print(f"---------------------------------------\n\nEsse é o cardápio eletrônico da cafeteria {nome}!\nAs funções disponíveis são as seguintes: \n\n[1] Adicionar um item ao menu\n[2] Subtrair um item do menu\n[3] Alterar um item do menu\n[4] Buscar itens no menu\n[5] Listar o menu\n[6] Fazer um pedido (com cálculo de valor incluso!)\n[7] Alterar o nome do restaurante/porcentagem do garçom\n[0] Encerrar o programa\n\n---------------------------------------")
 
     varEscolher = int(input("\nSua escolha: "))
 
@@ -59,6 +59,11 @@ def menuPrincipal():
         finalizarPedido(pedidoValores, pedidoProdutos)
     elif varEscolher == 7:
         alterarInfo()
+    elif varEscolher == 0:
+        exit()
+    else:
+        print("\n\nPor favor, insira uma opção válida.\n\n")
+        menuPrincipal()
 
 ## funções básicas do programa.
 
@@ -126,7 +131,7 @@ def finalizarPedido(pedidoValores, pedidoProdutos):
     for i in dicTemp:
         por = int(dicTemp[i])
 
-    print("------------------------------- \n\nOk, vamos fazer o pedido! :) \nQual a categoria do item?\n\n[1] Pratos principais\n[2] Sobremesas\n[3] Entradas\n[4] Bebidas \n[5] Finalizar o pedido\n[0] Voltar ao menu principal\n\n-------------------------------\n\n ")
+    print("--------------------------------------- \n\nOk, vamos fazer o pedido! :) \nQual a categoria do item?\n\n[1] Pratos principais\n[2] Sobremesas\n[3] Entradas\n[4] Bebidas \n[5] Finalizar o pedido\n[0] Voltar ao menu principal\n\n---------------------------------------\n\n ")
 
     varEscolher = int(input(""))
 
@@ -147,7 +152,7 @@ def finalizarPedido(pedidoValores, pedidoProdutos):
         finalizarPedido(pedidoValores, pedidoProdutos) 
 
     elif varEscolher == 5:
-        print(f"\n\n-------------------------------\n\nO valor do seu pedido (+ a taxa do garçom) deu R${pedidoValores + (pedidoValores * (por / 100))} e os itens pedidos foram os seguintes: {pedidoProdutos}.\n\n-------------------------------\n\n")
+        print(f"\n\n---------------------------------------\n\nO valor do seu pedido (+ a taxa do garçom) deu R${pedidoValores + (pedidoValores * (por / 100))} e os itens pedidos foram os seguintes: {pedidoProdutos}.\n")
         menuPrincipal()
 
     else:
@@ -298,7 +303,6 @@ def returnTiposProdutos(lista):
     strTipos = str(tipos)
 
     return strTipos.replace("{","").replace("}","").replace("[","").replace("]","").replace('"',"").replace("'","")
-
 
 ## inicialização do programa.
 
