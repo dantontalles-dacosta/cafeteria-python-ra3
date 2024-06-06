@@ -105,7 +105,7 @@ def adicionarItem():
                     subcategoria_dict[categoria_nome][nome_produto] = str(custo_produto)
 
             # Escrever a linha atualizada de volta ao arquivo
-            escreverLinhas(linha_categoria, str(linha_dic), "menu.txt")
+            escreverLinhas(linha_categoria + 1, str(linha_dic), "menu.txt")
             print(f"\nProduto '{nome_produto}' adicionado com sucesso à categoria '{categoria_nome}'.")
 
             # Perguntar se o usuário quer adicionar outro produto
@@ -285,7 +285,7 @@ def escreverLinhas(linha, conteudo, arquivo):
     with open(f"{arquivo}",'r', encoding="utf-8") as f:
         get_all = f.readlines()
 
-    with open(f"{arquivo}", "w") as file:
+    with open(f"{arquivo}", "w", encoding="utf-8") as file:
         for i,line in enumerate(get_all,1):
             if i == linha:
                 file.writelines(f"{conteudo} \n")
