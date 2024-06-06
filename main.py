@@ -117,8 +117,60 @@ def adicionarItem():
 
     menuPrincipal()
 
+
 def subtrairItem():
-    menuPrincipal()
+    while True:
+        # Ler o menu a partir do arquivo "menu.txt"
+        linhas = [lerLinhas(i, "menu.txt") for i in range(4)]
+        dic_menu = [eval(linha) for linha in linhas]
+
+        # Exibir categorias numeradas
+        print("\nSelecione uma categoria para excluir um item:")
+        categorias = []
+        for linha in dic_menu:
+            for categoria_dict in linha:
+                for categoria in categoria_dict.keys():
+                    categorias.append(categoria)
+
+        for i, categoria in enumerate(categorias, 1):
+            print(f"[{i}] {categoria}")
+
+        # Receber a categoria selecionada pelo usuário
+        categoria_escolhida = int(input("\nEscolha o número da categoria: ")) - 1
+
+        # Validar a entrada do usuário
+        if 0 <= categoria_escolhida < len(categorias):
+            categoria_nome = categorias[categoria_escolhida]
+
+            # Exibir os produtos da categoria escolhida
+            produtos = dic_menu[categoria_escolhida // 2][categoria_nome]
+            print(f"\nProdutos disponíveis em '{categoria_nome}':")
+            for produto, custo in produtos.items():
+                print(f"{produto}: {custo}")
+
+            # Receber o nome do produto a ser excluído
+            produto_excluir = input(f"\nDigite o nome do produto a ser excluído de '{categoria_nome}': ")
+
+            # Verificar se o produto existe na categoria
+            if produto_excluir in produtos:
+                # Remover o produto do dicionário da categoria correta
+                del dic_menu[categoria_escolhida // 2][categoria_nome][produto_excluir]
+
+                # Escrever a linha atualizada de volta ao arquivo
+                escreverLinhas(categoria_escolhida // 2, str(dic_menu[categoria_escolhida // 2]), "menu.txt")
+                print(f"\nProduto '{produto_excluir}' removido com sucesso da categoria '{categoria_nome}'.")
+
+                # Perguntar se o usuário deseja excluir outro produto
+                continuar = input("\nDeseja excluir outro produto? (s/n): ")
+                if continuar.lower() != 's':
+                    break
+            else:
+                print(f"\nProduto '{produto_excluir}' não encontrado em '{categoria_nome}'. Tente novamente.")
+        else:
+            print("\nEscolha inválida. Tente novamente.")
+
+
+menuPrincipal()
 
 def alterarItem():
     menuPrincipal()
