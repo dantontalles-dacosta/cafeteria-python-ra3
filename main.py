@@ -169,6 +169,21 @@ def localizarItem():
             menuPrincipal()
 
 def listarMenu():
+    principais = lerLinhas(linhaPrincipais, "menu.txt")
+    bebidas = lerLinhas(linhaBebidas, "menu.txt")
+    sobremesa = lerLinhas(linhaSobremesas, "menu.txt")
+    entradas = lerLinhas(linhaEntradas, "menu.txt")
+
+
+
+    print("\n\npratos principais:")
+    print( principais.replace("{","").replace('"',"").replace("}","").replace("[","").replace("]",""))
+    print("\n\nBebidas:")
+    print( bebidas.replace("}","").replace('"',"").replace("{","").replace("[","").replace("]",""))
+    print("\n\nSobremesa:")
+    print( sobremesa.replace("[","").replace('"',"").replace("]","").replace("{","").replace("}",""))
+    print("\n\nEntradas:")
+    print( entradas.replace("]","").replace('"',"").replace("[","").replace("{","").replace("}",""))
     menuPrincipal()
 
 def finalizarPedido(pedidoValores, pedidoProdutos):
