@@ -65,9 +65,56 @@ def menuPrincipal():
         print("\n\nPor favor, insira uma opção válida.\n\n")
         menuPrincipal()
 
-## funções básicas do programa.
+#Funções do programa
 
 def adicionarItem():
+    while True:
+        # Ler o menu a partir do arquivo "menu.txt"
+        linhas = [lerLinhas(i, "menu.txt") for i in range(4)]
+        dic_menu = [eval(linha) for linha in linhas]
+
+        # Exibir categorias numeradas
+        print("\nSelecione uma categoria para adicionar um item:")
+        categorias = []
+        for linha in dic_menu:
+            for categoria_dict in linha:
+                for categoria in categoria_dict.keys():
+                    categorias.append(categoria)
+        
+        for i, categoria in enumerate(categorias, 1):
+            print(f"[{i}] {categoria}")
+
+        # Receber a categoria selecionada pelo usuário
+        categoria_escolhida = int(input("\nEscolha o número da categoria: ")) - 1
+
+        # Validar a entrada do usuário
+        if 0 <= categoria_escolhida < len(categorias):
+            categoria_nome = categorias[categoria_escolhida]
+
+            # Receber o nome e custo do novo produto
+            nome_produto = input(f"\nDigite o nome do novo produto para {categoria_nome}: ")
+            custo_produto = int(input("Digite o custo do novo produto (em inteiro): "))
+
+            # Encontrar a linha correspondente e adicionar o produto
+            linha_categoria = categoria_escolhida // 2
+            linha_dic = dic_menu[linha_categoria]
+            
+            # Adicionar o novo produto ao dicionário da categoria correta
+            for subcategoria_dict in linha_dic:
+                if categoria_nome in subcategoria_dict:
+                    subcategoria_dict[categoria_nome][nome_produto] = str(custo_produto)
+
+            # Escrever a linha atualizada de volta ao arquivo
+            escreverLinhas(linha_categoria, str(linha_dic), "menu.txt")
+            print(f"\nProduto '{nome_produto}' adicionado com sucesso à categoria '{categoria_nome}'.")
+
+            # Perguntar se o usuário quer adicionar outro produto
+            continuar = input("\nDeseja adicionar outro produto? (s/n): ")
+            if continuar.lower() != 's':
+                break
+        else:
+            print("\nEscolha inválida. Tente novamente.")
+
     menuPrincipal()
 
 def subtrairItem():
