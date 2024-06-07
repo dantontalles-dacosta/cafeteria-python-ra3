@@ -117,17 +117,16 @@ def adicionarItem():
 
     menuPrincipal()
 
-
 def subtrairItem():
     while True:
         # Ler o menu a partir do arquivo "menu.txt"
         linhas = [lerLinhas(i, "menu.txt") for i in range(4)]
-        dic_menu = [eval(linha) for linha in linhas]
+        lista_menu = [eval(linha) for linha in linhas]
 
         # Exibir categorias numeradas
         print("\nSelecione uma categoria para excluir um item:")
         categorias = []
-        for linha in dic_menu:
+        for linha in lista_menu:
             for categoria_dict in linha:
                 for categoria in categoria_dict.keys():
                     categorias.append(categoria)
@@ -143,34 +142,47 @@ def subtrairItem():
             categoria_nome = categorias[categoria_escolhida]
 
             # Exibir os produtos da categoria escolhida
-            produtos = dic_menu[categoria_escolhida // 2][categoria_nome]
+            produtos = {}
+            contador = 0
+
+            for i in lista_menu:
+                for x in i:
+                    for z, y in x.items():
+                        if contador == categoria_escolhida:
+                            produtos.update(y)
+                        contador += 1
+
             print(f"\nProdutos disponíveis em '{categoria_nome}':")
-            for produto, custo in produtos.items():
-                print(f"{produto}: {custo}")
+
+            for produto, valor in produtos.items():
+                print(f"{produto}: {valor}")
 
             # Receber o nome do produto a ser excluído
             produto_excluir = input(f"\nDigite o nome do produto a ser excluído de '{categoria_nome}': ")
-
+            linha_escrever = ""
             # Verificar se o produto existe na categoria
-            if produto_excluir in produtos:
-                # Remover o produto do dicionário da categoria correta
-                del dic_menu[categoria_escolhida // 2][categoria_nome][produto_excluir]
+            for lista in lista_menu:
+                for categoria in lista:
+                    for chave, dados in categoria.items():
+                        for produto, valor in dados.items():
+                            if produto_excluir == produto:
+                                dados.pop(produto)
+                                linha_escrever = lista
+                                break
 
                 # Escrever a linha atualizada de volta ao arquivo
-                escreverLinhas(categoria_escolhida // 2, str(dic_menu[categoria_escolhida // 2]), "menu.txt")
-                print(f"\nProduto '{produto_excluir}' removido com sucesso da categoria '{categoria_nome}'.")
+            escreverLinhas(categoria_escolhida + 1, linha_escrever, "menu.txt")
+
+            print(f"\nProduto '{produto_excluir}' removido com sucesso da categoria '{categoria_nome}'.")
 
                 # Perguntar se o usuário deseja excluir outro produto
-                continuar = input("\nDeseja excluir outro produto? (s/n): ")
-                if continuar.lower() != 's':
-                    break
+            continuar = input("\nDeseja excluir outro produto? (s/n): ")
+            if continuar.lower() != 's':
+                menuPrincipal()
             else:
                 print(f"\nProduto '{produto_excluir}' não encontrado em '{categoria_nome}'. Tente novamente.")
         else:
             print("\nEscolha inválida. Tente novamente.")
-
-
-menuPrincipal()
 
 def alterarItem():
     menuPrincipal()
