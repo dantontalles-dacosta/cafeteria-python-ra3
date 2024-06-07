@@ -1,4 +1,0 @@
-[{'sanduíches': {'baurú': '15', 'x-bacon': '24'}}, {'salgados': {'coxinha': '7', 'bolinho de carne': '6'}}] 
-[{"sorvete":{"sorvete de morango":"6", "sorvete de chocolate":"6"}},{"bolos":{"bolo de chocolate (fatia)":"5", "bolo de milho (fatia)":"5"}}]
-[{"pão de queijo":{"pão de queijo comum (5 unidades)":"4", "pão de queijo recheado (2 unidades)":"3"}}]
-[{"refrigerantes":{"coca-cola":"8", "sprite":"7"}},{"sucos":{"suco de manga":"8", "suco de uva":"9"}}]
