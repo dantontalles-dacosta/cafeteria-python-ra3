@@ -69,7 +69,65 @@ def subtrairItem():
     menuPrincipal()
 
 def alterarItem():
-    menuPrincipal()
+    print("\n---------------------------------------\n")
+    print("Qual categoria o item pertence?")
+    print("[1] Sanduíches\n[2] Salgados\n[3] Sorvetes\n[4] Bolos\n[5] Pão de queijo\n[6] Refrigerantes\n[7] Sucos")
+    categoria = int(input("Escolha a categoria: "))
+
+    print("\n---------------------------------------\n")
+    nome_item = input("Qual o nome do item que deseja alterar? ").lower()
+    novo_nome = input("Qual o novo nome do item? ").lower()
+    novo_preco = input("Qual o novo preço do item? ")
+
+    # Mapear o número da categoria para a linha correspondente no arquivo
+    linha_categoria = categoria - 1
+
+    # Atualizar o item no arquivo
+    linha = lerLinhas(linha_categoria, "menu.txt")
+    dic_categoria = eval(linha)
+    for item in dic_categoria:
+        for key, value in item.items():
+            if nome_item in value:
+                value[novo_nome] = value.pop(nome_item)
+                value[novo_nome] = novo_preco
+                escreverLinhas(linha_categoria, str(dic_categoria), "menu.txt")
+                print("\nItem alterado com sucesso!\n")
+                return
+    print("\nItem não encontrado na categoria especificada.\n")
+
+def menuPrincipal():
+    pedidoValores = 0
+    pedidoProdutos = ""
+    nome = ""
+    with open("info.txt", "r", encoding="utf-8") as file:
+        content = file.readlines()
+        for line in content:
+            dicTemp = eval(line)
+            for i in dicTemp:
+                nome = dicTemp[i]
+
+    print(f"\n\n\n\n\n\n\n\n\n---------------------------------------\n\nEsse é o cardápio eletrônico da cafeteria {nome}!\nAs funções disponíveis são as seguintes: \n\n[1] Adicionar um item ao menu\n[2] Subtrair um item do menu\n[3] Alterar um item do menu\n[4] Buscar itens no menu\n[5] Listar o menu\n[6] Fazer um pedido (com cálculo de valor incluso!)\n[7] Alterar o nome do restaurante/porcentagem do garçom\n[0] Encerrar o programa\n\n---------------------------------------")
+
+    varEscolher = int(input("\nSua escolha: "))
+
+    if varEscolher == 1:
+        adicionarItem()
+    elif varEscolher == 2:
+        subtrairItem()
+    elif varEscolher == 3:
+        alterarItem()
+    elif varEscolher == 4:
+        localizarItem()
+    elif varEscolher == 5:
+        listarMenu()
+    elif varEscolher == 6:
+        finalizarPedido(pedidoValores, pedidoProdutos)
+    elif varEscolher == 7:
+        alterarInfo()
+
+
+
+
 
 def localizarItem():
     print("\n---------------------------------------\n\nQual o nome do item que você deseja localizar?\n\n---------------------------------------\n")
@@ -304,3 +362,5 @@ def returnTiposProdutos(lista):
 
 escritaInicial()
 menuPrincipal()
+
+
