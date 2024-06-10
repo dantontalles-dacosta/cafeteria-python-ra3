@@ -185,8 +185,31 @@ def subtrairItem():
             print("\nEscolha inválida. Tente novamente.")
 
 def alterarItem():
-    menuPrincipal()
+    print("\n---------------------------------------\n")
+    print("Qual categoria o item pertence?")
+    print("[1] Sanduíches\n[2] Salgados\n[3] Sorvetes\n[4] Bolos\n[5] Pão de queijo\n[6] Refrigerantes\n[7] Sucos")
+    categoria = int(input("Escolha a categoria: "))
 
+    print("\n---------------------------------------\n")
+    nome_item = input("Qual o nome do item que deseja alterar? ").lower()
+    novo_nome = input("Qual o novo nome do item? ").lower()
+    novo_preco = input("Qual o novo preço do item? ")
+
+    # Mapear o número da categoria para a linha correspondente no arquivo
+    linha_categoria = categoria - 1
+
+    # Atualizar o item no arquivo
+    linha = lerLinhas(linha_categoria, "menu.txt")
+    dic_categoria = eval(linha)
+    for item in dic_categoria:
+        for key, value in item.items():
+            if nome_item in value:
+                value[novo_nome] = value.pop(nome_item)
+                value[novo_nome] = novo_preco
+                escreverLinhas(linha_categoria + 1, str(dic_categoria), "menu.txt")
+                print("\nItem alterado com sucesso!\n")
+                menuPrincipal()
+    print("\nItem não encontrado na categoria especificada.\n")
 def localizarItem():
     print("\n---------------------------------------\n\nQual o nome do item que você deseja localizar?\n\n---------------------------------------\n")
 
