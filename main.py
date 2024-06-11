@@ -1,3 +1,5 @@
+import os.path
+
 linhaPrincipais = 0
 linhaSobremesas = 1
 linhaEntradas = 2
@@ -16,19 +18,21 @@ def escritaInicial():
 
     initInfo = ['{"nome":"Molejo"}','{"porcentagem":"8"}']
 
-    with open("menu.txt", "w", encoding="utf-8") as file:
-        for i in range(4):
-            if i < 3:
-                file.writelines(f"{initLista[i]}\n")
-            else:
-                file.writelines(f"{initLista[i]}")
-
-    with open("info.txt", "w", encoding="utf-8") as file:
-        for i in range(0,2):
-            if i < 1:
-                file.writelines(f"{initInfo[i]}\n")
-            else:
-                file.writelines(f"{initInfo[i]}")
+    if os.path.isfile("menu.txt") == False:
+        with open("menu.txt", "w", encoding="utf-8") as file:
+            for i in range(4):
+                if i < 3:
+                    file.writelines(f"{initLista[i]}\n")
+                else:
+                    file.writelines(f"{initLista[i]}")
+                    
+    if os.path.isfile("info.txt") == False:
+        with open("info.txt", "w", encoding="utf-8") as file:
+            for i in range(0,2):
+                if i < 1:
+                    file.writelines(f"{initInfo[i]}\n")
+                else:
+                    file.writelines(f"{initInfo[i]}")
 
 def menuPrincipal():
 
