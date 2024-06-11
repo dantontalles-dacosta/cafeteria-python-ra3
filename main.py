@@ -214,6 +214,7 @@ def alterarItem():
                 print("\nItem alterado com sucesso!\n")
                 menuPrincipal()
     print("\nItem não encontrado na categoria especificada.\n")
+    
 def localizarItem():
     print("\n---------------------------------------\n\nQual o nome do item que você deseja localizar?\n\n---------------------------------------\n")
 
