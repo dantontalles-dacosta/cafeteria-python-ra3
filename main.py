@@ -1,3 +1,5 @@
+import os.path
+
 linhaPrincipais = 0
 linhaSobremesas = 1
 linhaEntradas = 2
@@ -16,19 +18,21 @@ def escritaInicial():
 
     initInfo = ['{"nome":"Molejo"}','{"porcentagem":"8"}']
 
-    with open("menu.txt", "w", encoding="utf-8") as file:
-        for i in range(4):
-            if i < 3:
-                file.writelines(f"{initLista[i]}\n")
-            else:
-                file.writelines(f"{initLista[i]}")
-
-    with open("info.txt", "w", encoding="utf-8") as file:
-        for i in range(0,2):
-            if i < 1:
-                file.writelines(f"{initInfo[i]}\n")
-            else:
-                file.writelines(f"{initInfo[i]}")
+    if os.path.isfile("menu.txt") == False:
+        with open("menu.txt", "w", encoding="utf-8") as file:
+            for i in range(4):
+                if i < 3:
+                    file.writelines(f"{initLista[i]}\n")
+                else:
+                    file.writelines(f"{initLista[i]}")
+                    
+    if os.path.isfile("info.txt") == False:
+        with open("info.txt", "w", encoding="utf-8") as file:
+            for i in range(0,2):
+                if i < 1:
+                    file.writelines(f"{initInfo[i]}\n")
+                else:
+                    file.writelines(f"{initInfo[i]}")
 
 def menuPrincipal():
 
@@ -189,6 +193,8 @@ def alterarItem():
     print("Qual categoria o item pertence?")
     print("[1] Sanduíches\n[2] Salgados\n[3] Sorvetes\n[4] Bolos\n[5] Pão de queijo\n[6] Refrigerantes\n[7] Sucos")
     categoria = int(input("Escolha a categoria: "))
+<<<<<<< HEAD
+=======
 
     print("\n---------------------------------------\n")
     nome_item = input("Qual o nome do item que deseja alterar? ").lower()
@@ -244,7 +250,28 @@ def menuPrincipal():
 
 
 
+>>>>>>> main
 
+    print("\n---------------------------------------\n")
+    nome_item = input("Qual o nome do item que deseja alterar? ").lower()
+    novo_nome = input("Qual o novo nome do item? ").lower()
+    novo_preco = input("Qual o novo preço do item? ")
+
+    # Mapear o número da categoria para a linha correspondente no arquivo
+    linha_categoria = categoria - 1
+
+    # Atualizar o item no arquivo
+    linha = lerLinhas(linha_categoria, "menu.txt")
+    dic_categoria = eval(linha)
+    for item in dic_categoria:
+        for key, value in item.items():
+            if nome_item in value:
+                value[novo_nome] = value.pop(nome_item)
+                value[novo_nome] = novo_preco
+                escreverLinhas(linha_categoria + 1, str(dic_categoria), "menu.txt")
+                print("\nItem alterado com sucesso!\n")
+                menuPrincipal()
+    print("\nItem não encontrado na categoria especificada.\n")
 def localizarItem():
     print("\n---------------------------------------\n\nQual o nome do item que você deseja localizar?\n\n---------------------------------------\n")
 
