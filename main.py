@@ -190,31 +190,67 @@ def subtrairItem():
 
 
 def alterarItem():
-    print("\n---------------------------------------\n")
-    print("Qual categoria o item pertence?")
-    print("[1] Sanduíches\n[2] Salgados\n[3] Sorvetes\n[4] Bolos\n[5] Pão de queijo\n[6] Refrigerantes\n[7] Sucos")
-    categoria = int(input("Escolha a categoria: "))
+    # Ler o menu a partir do arquivo "menu.txt"
+    with open("menu.txt", "r", encoding="utf-8") as file:
+        linhas = file.readlines()
+        menu = [eval(linha) for linha in linhas]
 
-    print("\n---------------------------------------\n")
-    nome_item = input("Qual o nome do item que deseja alterar? ").lower()
-    novo_nome = input("Qual o novo nome do item? ").lower()
-    novo_preco = input("Qual o novo preço do item? ")
+    # Exibir as categorias disponíveis
+    print("\nCategorias disponíveis para alteração:")
+    categorias = []
+    for linha in menu:
+        for categoria_dict in linha:
+            categoria = list(categoria_dict.keys())[0]
+            categorias.append(categoria)
+    for i, categoria in enumerate(categorias, start=1):
+        print(f"[{i}] {categoria}")
 
-    # Mapear o número da categoria para a linha correspondente no arquivo
-    linha_categoria = categoria - 1
+    # Receber a categoria escolhida pelo usuário
+    escolha_categoria = int(input("\nEscolha o número da categoria que deseja alterar: ")) - 1
 
-    # Atualizar o item no arquivo
-    linha = lerLinhas(linha_categoria, "menu.txt")
-    dic_categoria = eval(linha)
-    for item in dic_categoria:
-        for key, value in item.items():
-            if nome_item in value:
-                value[novo_nome] = value.pop(nome_item)
-                value[novo_nome] = novo_preco
-                escreverLinhas(linha_categoria + 1, str(dic_categoria), "menu.txt")
-                print("\nItem alterado com sucesso!\n")
-                menuPrincipal()
-    print("\nItem não encontrado na categoria especificada.\n")
+    # Validar a escolha do usuário
+    if 0 <= escolha_categoria < len(categorias):
+        categoria_nome = categorias[escolha_categoria]
+
+        # Exibir os itens disponíveis na categoria escolhida
+        print(f"\nItens disponíveis na categoria '{categoria_nome}':")
+        itens = None
+        for linha in menu:
+            for categoria_dict in linha:
+                if categoria_nome in categoria_dict:
+                    itens = categoria_dict[categoria_nome]
+        if itens:
+            for i, (item, valor) in enumerate(itens.items(), start=1):
+                print(f"[{i}] {item}: {valor}")
+
+            # Receber o número do item a ser alterado
+            escolha_item = int(input("\nEscolha o número do item que deseja alterar: ")) - 1
+
+            # Validar a escolha do usuário
+            if 0 <= escolha_item < len(itens):
+                item_nome = list(itens.keys())[escolha_item]
+                novo_nome = input("\nDigite o novo nome do item: ")
+                novo_valor = input("Digite o novo valor do item: ")
+
+                # Atualizar o nome e o valor do item
+                itens[novo_nome] = itens.pop(item_nome)
+                itens[novo_nome] = novo_valor
+
+                # Atualizar o menu no arquivo
+                with open("menu.txt", "w", encoding="utf-8") as file:
+                    for linha in menu:
+                        file.write(str(linha) + '\n')
+
+                print("\nItem alterado com sucesso!")
+            else:
+                print("\nEscolha de item inválida.")
+        else:
+            print("\nNão há itens nesta categoria.")
+    else:
+        print("\nEscolha de categoria inválida.")
+
+    # Voltar ao menu principal
+    menuPrincipal()
     
 def localizarItem():
     print("\n---------------------------------------\n\nQual o nome do item que você deseja localizar?\n\n---------------------------------------\n")
