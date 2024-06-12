@@ -70,49 +70,52 @@ def menuPrincipal():
         menuPrincipal()
 
 #Funções do programa
-
 def adicionarItem():
     while True:
         # Ler o menu a partir do arquivo "menu.txt"
         linhas = [lerLinhas(i, "menu.txt") for i in range(4)]
-        dic_menu = [eval(linha) for linha in linhas]
+        menu = [eval(linha) for linha in linhas]
 
-        # Exibir categorias numeradas
-        print("\nSelecione uma categoria para adicionar um item:")
+        # Exibir as categorias
         categorias = []
-        for linha in dic_menu:
+        for linha in menu:
             for categoria_dict in linha:
                 for categoria in categoria_dict.keys():
                     categorias.append(categoria)
-        
+
+        print("\nSelecione uma categoria para adicionar um item:")
         for i, categoria in enumerate(categorias, 1):
             print(f"[{i}] {categoria}")
 
-        # Receber a categoria selecionada pelo usuário
-        categoria_escolhida = int(input("\nEscolha o número da categoria: ")) - 1
+        # Receber a categoria escolhida pelo usuário
+        escolha = int(input("\nEscolha o número da categoria: ")) - 1
 
-        # Validar a entrada do usuário
-        if 0 <= categoria_escolhida < len(categorias):
-            categoria_nome = categorias[categoria_escolhida]
+        # Validar a escolha do usuário
+        if 0 <= escolha < len(categorias):
+            categoria_nome = categorias[escolha]
 
             # Receber o nome e custo do novo produto
             nome_produto = input(f"\nDigite o nome do novo produto para {categoria_nome}: ")
-            custo_produto = int(input("Digite o custo do novo produto (em inteiro): "))
+            custo_produto = input("Digite o custo do novo produto: ")
 
             # Encontrar a linha correspondente e adicionar o produto
-            linha_categoria = categoria_escolhida // 2
-            linha_dic = dic_menu[linha_categoria]
-            
-            # Adicionar o novo produto ao dicionário da categoria correta
-            for subcategoria_dict in linha_dic:
-                if categoria_nome in subcategoria_dict:
-                    subcategoria_dict[categoria_nome][nome_produto] = str(custo_produto)
+            encontrou_linha = False
+            for i, linha in enumerate(menu):
+                for categoria_dict in linha:
+                    if categoria_nome in categoria_dict:
+                        encontrou_linha = True
+                        categoria_dict[categoria_nome][nome_produto] = custo_produto
+                        # Escrever a linha atualizada de volta ao arquivo
+                        escreverLinha(i, str(menu[i]), "menu.txt")
+                        print(f"\nProduto '{nome_produto}' adicionado com sucesso à categoria '{categoria_nome}'.")
+                        break
+                if encontrou_linha:
+                    break
 
-            # Escrever a linha atualizada de volta ao arquivo
-            escreverLinhas(linha_categoria + 1, str(linha_dic), "menu.txt")
-            print(f"\nProduto '{nome_produto}' adicionado com sucesso à categoria '{categoria_nome}'.")
+            if not encontrou_linha:
+                print("\nErro ao adicionar o produto. Categoria não encontrada.")
 
-            # Perguntar se o usuário quer adicionar outro produto
+            # Perguntar se o usuário deseja adicionar outro produto
             continuar = input("\nDeseja adicionar outro produto? (s/n): ")
             if continuar.lower() != 's':
                 break
@@ -125,68 +128,66 @@ def subtrairItem():
     while True:
         # Ler o menu a partir do arquivo "menu.txt"
         linhas = [lerLinhas(i, "menu.txt") for i in range(4)]
-        lista_menu = [eval(linha) for linha in linhas]
+        menu = [eval(linha) for linha in linhas]
 
-        # Exibir categorias numeradas
-        print("\nSelecione uma categoria para excluir um item:")
+        # Exibir as categorias
         categorias = []
-        for linha in lista_menu:
+        for linha in menu:
             for categoria_dict in linha:
                 for categoria in categoria_dict.keys():
                     categorias.append(categoria)
 
+        print("\nSelecione uma categoria para excluir um item:")
         for i, categoria in enumerate(categorias, 1):
             print(f"[{i}] {categoria}")
 
-        # Receber a categoria selecionada pelo usuário
-        categoria_escolhida = int(input("\nEscolha o número da categoria: ")) - 1
+        # Receber a categoria escolhida pelo usuário
+        escolha = int(input("\nEscolha o número da categoria: ")) - 1
 
-        # Validar a entrada do usuário
-        if 0 <= categoria_escolhida < len(categorias):
-            categoria_nome = categorias[categoria_escolhida]
+        # Validar a escolha do usuário
+        if 0 <= escolha < len(categorias):
+            categoria_nome = categorias[escolha]
 
             # Exibir os produtos da categoria escolhida
             produtos = {}
-            contador = 0
+            encontrou_linha = False
+            linha_escrever = None
 
-            for i in lista_menu:
-                for x in i:
-                    for z, y in x.items():
-                        if contador == categoria_escolhida:
-                            produtos.update(y)
-                        contador += 1
+            for i, linha in enumerate(menu):
+                for categoria_dict in linha:
+                    if categoria_nome in categoria_dict:
+                        produtos = categoria_dict[categoria_nome]
+                        encontrou_linha = True
+                        linha_escrever = i
 
-            print(f"\nProdutos disponíveis em '{categoria_nome}':")
+            if encontrou_linha:
+                print(f"\nProdutos disponíveis em '{categoria_nome}':")
+                for produto, valor in produtos.items():
+                    print(f"{produto}: {valor}")
 
-            for produto, valor in produtos.items():
-                print(f"{produto}: {valor}")
+                # Receber o nome do produto a ser excluído
+                produto_excluir = input(f"\nDigite o nome do produto a ser excluído de '{categoria_nome}': ")
 
-            # Receber o nome do produto a ser excluído
-            produto_excluir = input(f"\nDigite o nome do produto a ser excluído de '{categoria_nome}': ")
-            linha_escrever = ""
-            # Verificar se o produto existe na categoria
-            for lista in lista_menu:
-                for categoria in lista:
-                    for chave, dados in categoria.items():
-                        for produto, valor in dados.items():
-                            if produto_excluir == produto:
-                                dados.pop(produto)
-                                linha_escrever = lista
-                                break
+                # Remover o produto se ele existir
+                if produto_excluir in produtos:
+                    del produtos[produto_excluir]
+                    # Escrever a linha atualizada de volta ao arquivo
+                    escreverLinha(linha_escrever, str(menu[linha_escrever]), "menu.txt")
+                    print(f"\nProduto '{produto_excluir}' removido com sucesso da categoria '{categoria_nome}'.")
+                else:
+                    print(f"\nProduto '{produto_excluir}' não encontrado em '{categoria_nome}'. Tente novamente.")
+            else:
+                print("\nErro ao encontrar a categoria. Tente novamente.")
 
-                # Escrever a linha atualizada de volta ao arquivo
-            escreverLinhas(categoria_escolhida + 1, linha_escrever, "menu.txt")
-
-            print(f"\nProduto '{produto_excluir}' removido com sucesso da categoria '{categoria_nome}'.")
-
-                # Perguntar se o usuário deseja excluir outro produto
+            # Perguntar se o usuário deseja excluir outro produto
             continuar = input("\nDeseja excluir outro produto? (s/n): ")
             if continuar.lower() != 's':
-                menuPrincipal()
-            else:
-                print(f"\nProduto '{produto_excluir}' não encontrado em '{categoria_nome}'. Tente novamente.")
+                break
         else:
             print("\nEscolha inválida. Tente novamente.")
+
+    menuPrincipal()
+
 
 def alterarItem():
     print("\n---------------------------------------\n")
@@ -379,25 +380,17 @@ def alterarInfo():
 
 ## funções genéricas p/auxiliar na manipulação de dados.
 
-def lerLinhas(linha, arquivo):
-    """Retorna a linha inteira no arquivo indicado como uma string. \n\nExige os parâmetros linha a ser copiada (int) e arquivo a ser lido (string). \n\nex: Preciso ler a linha 8 do arquivo receitas, lerLinhas(8, 'receitas.txt')."""
-
-    with open(f"{arquivo}", "r", encoding="utf-8") as file:
-        content = file.readlines()
-        return content[linha]
+def lerLinhas(linha, filename):
+    with open(filename, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    return lines[linha]
     
-def escreverLinhas(linha, conteudo, arquivo):
-    """Sobrescreve a linha do arquivo indicado com o conteúdo fornecido. Não retorna nada.\n\nExige os parâmetros linha a ser sobrescrita (int), conteúdo (qualquer um, pois a função formata para string) e arquivo (string)."""
-
-    with open(f"{arquivo}",'r', encoding="utf-8") as f:
-        get_all = f.readlines()
-
-    with open(f"{arquivo}", "w", encoding="utf-8") as file:
-        for i,line in enumerate(get_all,1):
-            if i == linha:
-                file.writelines(f"{conteudo} \n")
-            else:
-                file.writelines(line)
+def escreverLinha(linha, conteudo, filename):
+    with open(filename, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    lines[linha] = conteudo + '\n'
+    with open(filename, 'w', encoding='utf-8') as file:
+        file.writelines(lines)
 
 def returnTiposLista(lista):
     """Dada uma lista, retorna todos os tipos de itens contidos nela como uma lista.\n\nExige como parâmetro uma lista.\n\nNão confundir tipo com categoria: 'bebida' é categoria, 'suco' é tipo."""
