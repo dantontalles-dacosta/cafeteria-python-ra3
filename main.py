@@ -394,7 +394,7 @@ def alterarInfo():
         for i in dicTemp:
             dicTemp[i] = nome
 
-        escreverLinhas(1, dicTemp, "info.txt")
+        escreverLinha(0, f"{dicTemp}", "info.txt")
         print(f"\n\nNome alterado com sucesso! A cafeteria agora se chama {nome}.\n\n")
         menuPrincipal()
     elif varEscolha == 2:
@@ -409,7 +409,9 @@ def alterarInfo():
         for i in dicTemp:
             dicTemp[i] = por
 
-        escreverLinhas(2, dicTemp, "info.txt")
+        escreverLinha(1, f"{dicTemp}", "info.txt")
+        if por > porAntiga:
+            print("Uau, um aumento? Muito obrigado! - garçom. ")
         menuPrincipal()
     else:
         menuPrincipal()
